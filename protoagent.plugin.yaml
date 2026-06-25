@@ -1,0 +1,32 @@
+id: linear
+name: Linear (Ava agent)
+version: 0.1.0
+description: >-
+  Full Linear integration in one plugin — six linear_* tools (list teams/issues,
+  search, get, create with dedup, comment), an OAuth agent identity so comments and
+  agent-session activities post AS Ava, and inbound "Ava as a Linear agent" handling
+  via a stale/pending session POLLER (works behind a LAN — no public URL) plus an
+  optional HMAC webhook fast-path + OAuth routes. Outbound tools need only
+  LINEAR_API_KEY; the agent identity needs a Linear OAuth app — authorize once at
+  /plugins/linear/oauth/start. Degrades gracefully when unconfigured.
+enabled: false
+capabilities:
+  network: [api.linear.app, linear.app]
+  filesystem: scoped   # OAuth refresh token cached in the instance data dir
+
+config_section: linear
+config:
+  api_key: ""
+  ava_client_id: ""
+  ava_client_secret: ""
+  ava_redirect_uri: ""
+  ava_scopes: ""
+  webhook_secret: ""
+secrets: [api_key, ava_client_secret, webhook_secret]
+settings:
+  - { key: api_key, label: "API key", type: secret, description: "Linear personal API key (LINEAR_API_KEY). Gates the 6 tools." }
+  - { key: ava_client_id, label: "OAuth client ID", type: string, description: "Linear OAuth app client id for the agent identity (LINEAR_AVA_CLIENT_ID)." }
+  - { key: ava_client_secret, label: "OAuth client secret", type: secret, description: "OAuth app secret (LINEAR_AVA_CLIENT_SECRET)." }
+  - { key: ava_redirect_uri, label: "OAuth redirect URI", type: string, description: "Public callback, e.g. https://<host>/plugins/linear/oauth/callback (LINEAR_AVA_REDIRECT_URI)." }
+  - { key: ava_scopes, label: "OAuth scopes", type: string, description: "Default read,write,app:assignable,app:mentionable (LINEAR_AVA_SCOPES)." }
+  - { key: webhook_secret, label: "Webhook secret", type: secret, description: "HMAC secret for the optional inbound webhook (LINEAR_WEBHOOK_SECRET)." }
