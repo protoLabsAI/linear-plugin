@@ -16,15 +16,22 @@ from __future__ import annotations
 
 import logging
 
+from fastapi import APIRouter, Request
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+
 from .events import classify, verify_signature
 
 log = logging.getLogger("protoagent.plugins.linear")
 
+# NOTE: imports live at module level (not inside build_router) on purpose — with
+# `from __future__ import annotations` the route handlers' `request: Request`
+# annotation is a STRING that FastAPI resolves against THIS module's globals. If
+# Request were imported only inside build_router, that resolution fails and FastAPI
+# mis-reads `request` as a required query param (422). FastAPI is always present
+# when this module is imported (register() builds the router at plugin load).
+
 
 def build_router(client, identity, activity, bridge, *, webhook_secret: str):
-    from fastapi import APIRouter, Request
-    from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
-
     router = APIRouter()
     # CSRF state for the OAuth round-trip (process-local; fine for a single operator).
     _states: set[str] = set()
