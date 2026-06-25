@@ -21,6 +21,13 @@ capabilities:
 public_paths:
   - /plugins/linear/webhook
   - /plugins/linear/oauth
+  - /plugins/linear/view     # the console view PAGE (browser iframe load can't carry a bearer)
+
+# Console view (ADR 0026) — a left-rail dashboard: config/connection status, the
+# "Authorize Ava on Linear" OAuth action, and recent assigned issues. Its data is
+# fetched from the GATED /api/plugins/linear/* routes with the operator bearer.
+views:
+  - { id: linear, label: Linear, icon: SquareKanban, path: /plugins/linear/view, placement: right }
 
 config_section: linear
 config:

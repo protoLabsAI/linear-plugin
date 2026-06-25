@@ -54,6 +54,13 @@ def register(registry) -> None:
     except Exception:  # noqa: BLE001 — router is best-effort
         log.exception("[linear] mounting OAuth/webhook router failed")
 
+    # Console view: public page (/plugins/linear/view) + gated data (/api/plugins/linear/*).
+    try:
+        from .view import build_data_router
+        registry.register_router(build_data_router(client, identity), prefix="/api/plugins/linear")
+    except Exception:  # noqa: BLE001 — view is best-effort
+        log.exception("[linear] mounting view data router failed")
+
     # Inbound poller surface — primary inbound path; self-idles until api_key +
     # an authorized OAuth identity are present.
     poller = SessionPoller(client, identity, activity, bridge)

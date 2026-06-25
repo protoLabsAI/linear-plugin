@@ -20,6 +20,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 
 from .events import classify, verify_signature
+from .view import PAGE
 
 log = logging.getLogger("protoagent.plugins.linear")
 
@@ -35,6 +36,12 @@ def build_router(client, identity, activity, bridge, *, webhook_secret: str):
     router = APIRouter()
     # CSRF state for the OAuth round-trip (process-local; fine for a single operator).
     _states: set[str] = set()
+
+    @router.get("/view")
+    async def view():
+        # Public page (declared in manifest public_paths); fetches its data from the
+        # GATED /api/plugins/linear/* routes with the console-supplied bearer.
+        return HTMLResponse(PAGE)
 
     @router.get("/oauth/start")
     async def oauth_start():
