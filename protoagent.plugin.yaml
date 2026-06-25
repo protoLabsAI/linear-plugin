@@ -14,6 +14,14 @@ capabilities:
   network: [api.linear.app, linear.app]
   filesystem: scoped   # OAuth refresh token cached in the instance data dir
 
+# Auth-exempt paths (protoAgent ≥ the public_paths feature): Linear's webhook
+# sends no bearer (it HMAC-signs the body — verified in webhook.py), and the OAuth
+# callback is a browser redirect that can't carry one. Both must pass the host's
+# default-deny gate; the webhook still rejects an unsigned/forged body itself.
+public_paths:
+  - /plugins/linear/webhook
+  - /plugins/linear/oauth
+
 config_section: linear
 config:
   api_key: ""
