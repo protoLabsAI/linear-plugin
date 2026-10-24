@@ -28,3 +28,5 @@ cd /path/to/protoAgent && uv run --frozen python -m pytest /path/to/linear-plugi
 ```
 
 Ported from the Linear surface of protoWorkstacean's Ava agent (tools + agent identity + agent-session handling).
+
+<!-- ops #119 QA panel neutral check (throwaway, will not merge) -->
